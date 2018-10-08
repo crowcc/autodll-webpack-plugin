@@ -335,6 +335,14 @@ module.exports = {
             <strong>⚠️ This option is highly experimental! Use with caution and if you face any problems, please open a issue.<strong>
           </td>
         </tr>
+        <tr>
+          <td>cacheDir</td>
+          <td>String</td>
+          <td><code>null</code></td>
+          <td>
+            Specify the directory to store cache files. If it is null or empty files will be stored inside of <i>~/my-project/node_modules/.cache</i>.
+          </td>
+        </tr>
     </tbody>
 </table>
 
