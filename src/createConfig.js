@@ -1,7 +1,7 @@
 import { strategy } from 'webpack-merge';
 import { DllPlugin } from 'webpack';
 import path from 'path';
-import { cacheDir } from './paths';
+import { getCacheDir } from './paths';
 
 import reject from 'lodash/reject';
 import get from 'lodash/get';
@@ -30,9 +30,9 @@ const prepare = config => {
   return { ...omit(config, props), plugins };
 };
 
-export const _createConfig = cacheDir => (settings, rawParentConfig) => {
+const createConfig = (settings, rawParentConfig) => {
   const { hash, filename = [] } = settings;
-  const outputPath = path.join(cacheDir, hash);
+  const outputPath = path.join(getCacheDir(settings.cacheDir), hash);
 
   const parentConfig = mapParentConfig(settings, prepare(rawParentConfig));
 
@@ -66,4 +66,4 @@ export const _createConfig = cacheDir => (settings, rawParentConfig) => {
   return webpackMerge(parentConfig, ownConfig, advanceConfig, cacheConfig);
 };
 
-export default _createConfig(cacheDir);
+export default createConfig;

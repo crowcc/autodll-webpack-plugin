@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from './utils/fs';
-import { cacheDir } from './paths';
+import { getCacheDir } from './paths';
 import del from 'del';
 import makeDir from 'make-dir';
 
@@ -10,6 +10,7 @@ const emptyCacheDir = settings => () => {
   // delete all the cached builds of the current instance
   // filter only the current instance build.
   // subdirectory name example: development_instance_0_bc6309c769a8a9d386898f61f8cb35d2
+  const cacheDir = getCacheDir(settings.cacheDir);
   return fs
     .readdirAsync(cacheDir)
     .filter(dirname => dirname.startsWith(`${settings.env}_${settings.id}`))

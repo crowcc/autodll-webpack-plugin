@@ -1,5 +1,15 @@
 import test from 'ava';
-import { getInjectPath } from '../src/paths';
+import { getInjectPath, getCacheDir } from '../src/paths';
+
+test('getCacheDir: should return the parameter passed', t => {
+  const expectedPath = '/a/b/c';
+
+  t.is(getCacheDir(expectedPath), expectedPath);
+});
+
+test('getCacheDir: should return the path from node_modules cache dir', t => {
+  t.regex(getCacheDir(null), /node_modules/);
+});
 
 test('getInjectPath: should join publicPath and pluginPath slashes correctly', t => {
   const expectedPath = '/a/b/c.js';

@@ -1,7 +1,7 @@
 import MemoryFileSystem from 'memory-fs';
 import fs from './utils/fs';
 import Promise from 'bluebird';
-import { cacheDir } from './paths';
+import { getCacheDir } from './paths';
 import path from 'path';
 
 const { stringify, parse } = JSON;
@@ -28,7 +28,7 @@ const createSync = (cacheDir, fs, mfs) => (hash, stats) => {
     .map(filename => {
       return Promise.props({
         filename,
-        buffer: fs.readFileAsync(path.join(cacheDir, hash, filename)),
+        buffer: fs.readFileAsync(path.join(getCacheDir(cacheDir), hash, filename)),
       });
     })
     .each(({ filename, buffer }) => {
@@ -52,14 +52,14 @@ const createGetStats = mfs => () => {
   }
 };
 
-export const _createMemory = (fs, cacheDir) => () => {
+export const _createMemory = fs => cacheDir => {
   const mfs = initializeMFS();
 
   return {
-    sync: createSync(cacheDir, fs, mfs),
+    sync: createSync(getCacheDir(cacheDir), fs, mfs),
     getAssets: createGetAssets(mfs),
     getStats: createGetStats(mfs),
   };
 };
 
-export default _createMemory(fs, cacheDir);
+export default _createMemory(fs);

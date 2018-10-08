@@ -1,7 +1,7 @@
 import del from 'del';
 import path from 'path';
-import { cacheDir } from '../../src/paths';
+import { getCacheDir } from '../../src/paths';
 
-const cleanup = () => del.sync(path.join(cacheDir));
+const cleanup = cacheDir => del.sync(path.join(getCacheDir(cacheDir)));
 
 export default cleanup;

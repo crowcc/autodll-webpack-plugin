@@ -1,7 +1,7 @@
 import test from 'ava';
 import isUndefined from 'lodash/isUndefined';
 import range from 'lodash/range';
-import { _createConfig } from '../src/createConfig';
+import createConfig from '../src/createConfig';
 import { cacheDir } from './helpers/mocks';
 import createSettingsHelper from './helpers/createSettingsHelper';
 import slashify from './helpers/slashify';
@@ -10,14 +10,13 @@ import AutoDllPlugin from '../src';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
-const createConfig = _createConfig(cacheDir);
-
 const settingsHelper = createSettingsHelper({
   index: 2,
   parentConfig: {
     context: '/parent_context/',
   },
   originalSettings: {
+    cacheDir,
     entry: {
       reactStuff: ['react', 'react-dom'],
       animationStuff: ['pixi.js', 'gsap'],

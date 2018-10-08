@@ -1,6 +1,6 @@
 import fs from './utils/fs';
 import { join } from 'path';
-import { cacheDir } from './paths';
+import { getCacheDir } from './paths';
 
 const createStoreStats = (fs, statsPath) => stats =>
   fs.writeFileAsync(statsPath, JSON.stringify(stats));
@@ -26,8 +26,8 @@ const createRetrieveStats = (memory, statsPath) => () => {
   });
 };
 
-const _createHandleStats = (fs, cacheDir) => (log, hash, memory) => {
-  const statsPath = join(cacheDir, hash, 'stats.json');
+const _createHandleStats = fs => (cacheDir, log, hash, memory) => {
+  const statsPath = join(getCacheDir(cacheDir), hash, 'stats.json');
   const storeStats = createStoreStats(fs, statsPath);
   const retrieveStats = createRetrieveStats(memory, statsPath);
 
@@ -49,4 +49,4 @@ const _createHandleStats = (fs, cacheDir) => (log, hash, memory) => {
   };
 };
 
-export default _createHandleStats(fs, cacheDir);
+export default _createHandleStats(fs);

@@ -8,7 +8,7 @@ import createCompileIfNeeded from '../src/createCompileIfNeeded';
 import createDllCompiler from '../src/createDllCompiler';
 import createSettings from '../src/createSettings';
 import createConfig from '../src/createConfig';
-import { cacheDir } from '../src/paths';
+import { getCacheDir } from '../src/paths';
 import cleanup from './helpers/cleanup';
 import createLogger from '../lib/createLogger';
 
@@ -16,7 +16,6 @@ const log = createLogger(false);
 
 test.serial('compileIfNeeded: should generate files', t => {
   t.plan(1);
-  cleanup();
 
   const parentConfig = {
     context: '/parent_context/',
@@ -26,6 +25,7 @@ test.serial('compileIfNeeded: should generate files', t => {
     index: 1,
     parentConfig: parentConfig,
     originalSettings: {
+      cacheDir: '',
       context: path.join(__dirname, '..'),
       env: 'production',
       entry: {
@@ -34,25 +34,25 @@ test.serial('compileIfNeeded: should generate files', t => {
     },
   });
 
+  cleanup(settings.cacheDir);
+
   const dllConfig = createConfig(settings, parentConfig);
   const compileIfNeeded = createCompileIfNeeded(log, settings);
 
   const expected = ['vendor.manifest.json', 'vendor.js'].map(file =>
-    path.join(cacheDir, settings.hash, file)
+    path.join(getCacheDir(settings.cacheDir), settings.hash, file)
   );
 
   return compileIfNeeded(createDllCompiler(dllConfig))
-    .then(() => recursive(cacheDir))
+    .then(() => recursive(getCacheDir(settings.cacheDir)))
     .then(files => {
       t.deepEqual(expected.sort(), files.sort());
-      cleanup();
+      cleanup(settings.cacheDir);
     });
 });
 
 test.serial('compileIfNeeded: should skip when settings equals lastSettings.json', t => {
   t.plan(8);
-
-  cleanup();
 
   const createDllCompilerSpy = settings => {
     const getCompiler = createDllCompiler(settings, {});
@@ -68,6 +68,7 @@ test.serial('compileIfNeeded: should skip when settings equals lastSettings.json
   const settings = createSettings({
     parentConfig: parentConfig,
     originalSettings: {
+      cacheDir: '',
       context: path.join(__dirname, '..'),
       entry: {
         vendor: ['lodash'],
@@ -76,6 +77,8 @@ test.serial('compileIfNeeded: should skip when settings equals lastSettings.json
     index: 4,
     env: 'planet_earth',
   });
+
+  cleanup(settings.cacheDir);
 
   const dllConfig = createConfig(settings, parentConfig);
   const compileIfNeeded = createCompileIfNeeded(log, settings);
@@ -107,6 +110,6 @@ test.serial('compileIfNeeded: should skip when settings equals lastSettings.json
       });
     })
     .then(() => {
-      cleanup();
+      cleanup(settings.cacheDir);
     });
 });

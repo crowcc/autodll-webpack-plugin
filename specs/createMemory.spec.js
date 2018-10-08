@@ -38,7 +38,7 @@ test('createMemory should have assets', t => {
     },
   ]);
 
-  const memory = _createMemory(fs, cacheDir)();
+  const memory = _createMemory(fs)(cacheDir);
   const stats = {
     hash: 'stats-hash',
     assets: [{ name: 'vendor-a.bundle.js' }, { name: 'vendor-b.bundle.js' }],

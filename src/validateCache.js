@@ -2,7 +2,7 @@ import path from 'path';
 import fs from './utils/fs';
 import makeDir from 'make-dir';
 import readPkg from 'read-pkg';
-import { cacheDir } from './paths';
+import { getCacheDir } from './paths';
 
 // This file could be written much better.
 // Ideally it should just return a boolean of the cache is valid or not
@@ -17,6 +17,7 @@ import { cacheDir } from './paths';
 // 3. The previous package.json diffrent from the current package.json
 
 const validateCache = settings => {
+  const cacheDir = getCacheDir(settings.cacheDir);
   const prevPkgPath = path.join(cacheDir, 'package.json.hash');
 
   return Promise.all([

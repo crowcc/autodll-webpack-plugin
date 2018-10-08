@@ -28,6 +28,7 @@ export const _createSettings = getEnv => ({ originalSettings, index, parentConfi
     debug: false,
     inherit: false,
     config: {},
+    cacheDir: null,
   };
 
   const settings = {

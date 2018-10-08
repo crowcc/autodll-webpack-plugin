@@ -7,7 +7,7 @@ import { RawSource } from 'webpack-sources';
 
 import path from 'path';
 
-import { cacheDir, getManifestPath, getInjectPath } from './paths';
+import { getCacheDir, getManifestPath, getInjectPath } from './paths';
 import createCompileIfNeeded from './createCompileIfNeeded';
 import createConfig from './createConfig';
 import createMemory from './createMemory';
@@ -51,8 +51,8 @@ class AutoDLLPlugin {
     const dllConfig = createConfig(settings, compiler.options);
     const compileIfNeeded = createCompileIfNeeded(log, settings);
 
-    const memory = createMemory();
-    const handleStats = createHandleStats(log, settings.hash, memory);
+    const memory = createMemory(settings.cacheDir);
+    const handleStats = createHandleStats(settings.cacheDir, log, settings.hash, memory);
 
     compiler.hooks.autodllStatsRetrieved = new SyncHook(['stats', 'source']);
 
@@ -65,7 +65,7 @@ class AutoDLLPlugin {
 
     const attachDllReferencePlugin = once(compiler => {
       Object.keys(dllConfig.entry)
-        .map(getManifestPath(settings.hash))
+        .map(getManifestPath(settings.hash, settings.cacheDir))
         .forEach(manifestPath => {
           new DllReferencePlugin({
             context: context,
@@ -76,7 +76,7 @@ class AutoDLLPlugin {
 
     const beforeCompile = (params, callback) => {
       const dependencies = new Set(params.compilationDependencies);
-      [...dependencies].filter(path => !path.startsWith(cacheDir));
+      [...dependencies].filter(path => !path.startsWith(getCacheDir(settings.cacheDir)));
       callback();
     };
 
